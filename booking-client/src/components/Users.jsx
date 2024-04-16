@@ -12,6 +12,7 @@ function Users() {
     const fetchData = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/getUsers");
+        setLoading(true);
         console.log(response.data);
         setUsers(response.data);
         setLoading(false);

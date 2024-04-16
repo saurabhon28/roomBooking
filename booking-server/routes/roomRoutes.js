@@ -13,7 +13,11 @@ import {
   bookRoom,
   bookingsByUserId,
 } from "../controllers/bookingController.js";
-import { getAllBookings, getUsers } from "../controllers/adminController.js";
+import {
+  addNewRoom,
+  getAllBookings,
+  getUsers,
+} from "../controllers/adminController.js";
 
 const router = express.Router();
 
@@ -26,6 +30,7 @@ router.post("/logout", logoutUser);
 router.post("/bookroom", bookRoom);
 router.post("/getbookingsbyuserid", bookingsByUserId);
 router.post("/cancelbooking", bookingsByUserId);
+router.post("/addnewroom", addNewRoom);
 router.get("/getallbookings", getAllBookings);
 router.get("/getUsers", getUsers);
 

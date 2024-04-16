@@ -3,6 +3,8 @@ import Bookings from "../components/Bookings";
 import Rooms from "../components/Rooms";
 import Users from "../components/Users";
 
+import AddRoom from "../components/AddRoom";
+
 const { TabPane } = Tabs;
 
 function AdminPage() {
@@ -17,7 +19,7 @@ function AdminPage() {
           <Rooms />
         </TabPane>
         <TabPane tab="Add Rooms" key="3">
-          <h1>Add Rooms</h1>
+          <AddRoom />
         </TabPane>
         <TabPane tab="Users" key="4">
           <Users />
