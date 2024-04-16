@@ -6,17 +6,17 @@ export const bookRoom = async (req, res) => {
   try {
     const { room, userId, fromDate, toDate, totalAmount, totalDays } = req.body;
 
-    // Input validation
-    if (
-      !room ||
-      !userId ||
-      !fromDate ||
-      !toDate ||
-      !totalAmount ||
-      !totalDays
-    ) {
-      return res.status(400).json({ error: "Missing required fields." });
-    }
+    // // Input validation
+    // if (
+    //   !room ||
+    //   !userId ||
+    //   !fromDate ||
+    //   !toDate ||
+    //   !totalAmount ||
+    //   !totalDays
+    // ) {
+    //   return res.status(400).json({ error: "Missing required fields." });
+    // }
 
     // Create new booking
     const newBooking = new bookingModel({
@@ -36,7 +36,7 @@ export const bookRoom = async (req, res) => {
     // Update room's current bookings
     const roomTemp = await roomModel.findOne({ _id: room._id });
 
-    roomTemp.currentBooking.push({
+    roomTemp.currentBookings.push({
       bookingId: booking._id,
       fromDate: moment(fromDate).format("MMMM Do YYYY"),
       toDate: moment(toDate).format("MMMM Do YYYY"),
@@ -61,13 +61,26 @@ export const bookRoom = async (req, res) => {
 
 //Booking By User id
 export const bookingsByUserId = async (req, res) => {
-  const userId = req.body.userid;
+  const userId = req.body.userId;
 
   try {
-    const bookings = await bookingModel.find({ userid: userId });
-    res.send(bookings);
+    // Fetch bookings for the provided userId
+    const bookings = await bookingModel.find({ userId });
+
+    // If no bookings are found, return appropriate response
+    if (!bookings || bookings.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No bookings found for the provided user ID." });
+    }
+
+    // If bookings are found, send them in the response
+    res.status(200).json({ bookings });
   } catch (error) {
-    return res.status(400).json({ error });
+    // Log the error for debugging purposes
+    console.error("Error fetching bookings by user ID:", error);
+    // Send a error message to the client
+    return res.status(500).json({ error: "An unexpected error occurred." });
   }
 };
 
@@ -76,23 +89,30 @@ export const cancelBooking = async (req, res) => {
   const { bookingId, roomId } = req.body;
 
   try {
-    const booking = await bookingModel.findOne({ _id: bookingId });
+    const bookingItem = await bookingModel.findOne({ _id: bookingId });
 
-    booking.status = "cancelled";
-    await booking.save();
+    if (!bookingItem) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    bookingItem.status = "cancelled";
+    await bookingItem.save();
+
     const room = await roomModel.findOne({ _id: roomId });
 
-    const bookings = room.currentBookings;
+    if (!room) {
+      return res.status(404).json({ message: "Room not found" });
+    }
 
-    const temp = bookings.filter(
+    room.currentBookings = room.currentBookings.filter(
       (booking) => booking.bookingId.toString() !== bookingId
     );
-    room.currentBookings = temp;
-
-    res.send("Your booking cancelled successfully");
 
     await room.save();
+
+    return res.status(200).json({ message: "Booking cancelled successfully" });
   } catch (error) {
-    return res.status(400).json({ error });
+    console.error("Error cancelling booking:", error);
+    return res.status(500).json({ error: "An unexpected error occurred" });
   }
 };

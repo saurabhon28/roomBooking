@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Loader from "../components/Loader";
@@ -15,18 +15,21 @@ function BookingPage() {
   const fromDate = moment(params.fromDate, "MMMM Do YYYY");
   const toDate = moment(params.toDate, "MMMM Do YYYY");
 
-  console.log(roomId);
   const totalDays = moment.duration(toDate.diff(fromDate)).asDays();
   const [totalAmount, setTotalAmount] = useState();
   const userId = JSON.parse(localStorage.getItem("user"))._id;
 
   useEffect(() => {
+    if (!localStorage.getItem("user")) {
+      window.location.reload("/login");
+    }
+
     const fetchData = async () => {
       try {
         setLoading(true);
         const data = (
           await axios.post("http://localhost:5000/api/getroombyid", {
-            roomid: params.roomid,
+            roomid: roomId,
           })
         ).data.data;
         setTotalAmount(data.rentPerDay * totalDays);

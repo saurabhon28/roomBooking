@@ -4,6 +4,8 @@ import axios from "axios";
 import Loader from "../components/Loader";
 import Error from "../components/Error";
 
+import Swal from "sweetalert2";
+
 const { TabPane } = Tabs;
 
 function ProfilePage() {
@@ -36,32 +38,33 @@ function ProfilePage() {
 export default ProfilePage;
 
 export function MyBookings() {
-  const [booking, setBookings] = useState([]);
-  const [loading, setLoading] = useState(false); // Initialized as true
-  const [error, setError] = useState(); // Initialized as false
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const user = JSON.parse(localStorage.getItem("user"));
+
   useEffect(() => {
-    const fetchRooms = async () => {
+    const fetchBookings = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
-        const data = await axios.post(
+        const response = await axios.post(
           "http://localhost:5000/api/getbookingsbyuserid",
           {
-            userid: user._id,
+            userId: user._id,
           }
         );
-        console.log(data);
-        setBookings(data);
+        console.log(response.data);
+        setBookings(response.data.bookings);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching rooms:", error);
+        console.error("Error fetching bookings:", error);
         setLoading(false);
         setError(error);
       }
     };
 
-    fetchRooms(); // Call the async function immediately
+    fetchBookings();
   }, [user._id]);
 
   const cancelBooking = async (bookingId, roomId) => {
@@ -72,9 +75,26 @@ export function MyBookings() {
         roomId,
       });
       console.log(result);
+
+      // Handle success
+      setLoading(false);
+      Swal.fire(
+        "Success",
+        "Your booking has been successfully canceled",
+        "success"
+      );
+
+      // Optionally update UI to reflect the canceled booking without reloading the page
+      // Example: Remove the canceled booking from the bookings list
     } catch (error) {
+      // Handle error
       console.log(error);
       setLoading(false);
+      Swal.fire(
+        "Error",
+        "Something went wrong while canceling your booking",
+        "error"
+      );
     }
   };
 
@@ -82,34 +102,34 @@ export function MyBookings() {
     <div className="row">
       <div className="col-md-6">
         {loading && <Loader />}
-        {booking &&
-          ((booking) => {
-            <div className="bs">
-              <h1>{booking.room}</h1>
-              <p>BookingId: {booking._id}</p>
-              <p>
-                <b>CheckIn:</b> {booking.fromDate}
-              </p>
-              <p>
-                <b>CheckOut:</b>
-                {booking.toDate}
-              </p>
-              <p>
-                <b>Amount:</b> {booking.totalAmount}
-              </p>
-              <p>
-                <b>Status:</b>
-                {booking.status == "booked" ? "CONFIRMED" : "CANCELLED"}
-              </p>
-              <div className="text-right">
+        {bookings.map((booking) => (
+          <div key={booking._id} className="bs">
+            <h1>{booking.room}</h1>
+            <p>BookingId: {booking._id}</p>
+            <p>
+              <b>CheckIn:</b> {booking.fromDate}
+            </p>
+            <p>
+              <b>CheckOut:</b> {booking.toDate}
+            </p>
+            <p>
+              <b>Amount:</b> {booking.totalAmount}
+            </p>
+            <p>
+              <b>Status:</b>{" "}
+              {booking.status === "booked" ? "CONFIRMED" : "CANCELLED"}
+            </p>
+            <div className="text-right">
+              {booking.status !== "cancelled" && (
                 <button
                   className="btn btn-primary"
                   onClick={() => cancelBooking(booking._id, booking.roomid)}>
                   CANCEL BOOKING
                 </button>
-              </div>
-            </div>;
-          })}
+              )}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

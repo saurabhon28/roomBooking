@@ -13,11 +13,11 @@ import {
   bookRoom,
   bookingsByUserId,
 } from "../controllers/bookingController.js";
-import {
-  addAdmin,
-  getAdmin,
-  loginAdmin,
-} from "../controllers/adminController.js";
+// import {
+//   addAdmin,
+//   getAdmin,
+//   loginAdmin,
+// } from "../controllers/adminController.js";
 
 const router = express.Router();
 
@@ -30,8 +30,8 @@ router.post("/logout", logoutUser);
 router.post("/bookroom", bookRoom);
 router.post("/getbookingsbyuserid", bookingsByUserId);
 router.post("/cancelbookinng", bookingsByUserId);
-router.post("/admins/add", addAdmin);
-router.post("/admins/login", loginAdmin);
-router.get("/agdmins/getadmins", getAdmin);
+// router.post("/admins/add", addAdmin);
+// router.post("/admins/login", loginAdmin);
+// router.get("/agdmins/getadmins", getAdmin);
 
 export default router;
