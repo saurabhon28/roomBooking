@@ -13,7 +13,7 @@ import {
   bookRoom,
   bookingsByUserId,
 } from "../controllers/bookingController.js";
-import { getAllBookings } from "../controllers/adminController.js";
+import { getAllBookings, getUsers } from "../controllers/adminController.js";
 
 const router = express.Router();
 
@@ -27,5 +27,6 @@ router.post("/bookroom", bookRoom);
 router.post("/getbookingsbyuserid", bookingsByUserId);
 router.post("/cancelbooking", bookingsByUserId);
 router.get("/getallbookings", getAllBookings);
+router.get("/getUsers", getUsers);
 
 export default router;

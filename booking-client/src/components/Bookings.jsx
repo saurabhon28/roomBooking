@@ -4,7 +4,7 @@ import axios from "axios";
 import Loader from "../components/Loader";
 import Error from "../components/Error";
 
-export function Bookings() {
+function Bookings() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -28,7 +28,7 @@ export function Bookings() {
 
   return (
     <div className="row">
-      <div className="col-md-10">
+      <div className="col-md-12">
         <h1>Bookings</h1>
         {loading && <Loader />}
         <table className="table table-bordered table-dark">
@@ -64,3 +64,5 @@ export function Bookings() {
     </div>
   );
 }
+
+export default Bookings;

@@ -1,4 +1,5 @@
 import { bookingModel } from "../models/bookingModel.js";
+import { Users } from "../models/userModel.js";
 
 export const getAllBookings = async (req, res) => {
   try {
@@ -9,7 +10,11 @@ export const getAllBookings = async (req, res) => {
   }
 };
 
-export const getAllBookedRooms = async (req, res) => {
+export const getUsers = async (req, res) => {
   try {
-  } catch (error) {}
+    const users = await Users.find({});
+    res.send(users);
+  } catch (error) {
+    return res.status(400).json({ error });
+  }
 };

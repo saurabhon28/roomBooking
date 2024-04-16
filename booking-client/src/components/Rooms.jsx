@@ -3,7 +3,7 @@ import axios from "axios";
 import Loader from "../components/Loader";
 import Error from "../components/Error";
 
-export function Rooms() {
+function Rooms() {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -26,7 +26,7 @@ export function Rooms() {
 
   return (
     <div className="row">
-      <div className="col-md-10">
+      <div className="col-md-12">
         <h1>Rooms</h1>
         {loading && <Loader />}
         {!loading && !error && (
@@ -63,3 +63,5 @@ export function Rooms() {
     </div>
   );
 }
+
+export default Rooms;
