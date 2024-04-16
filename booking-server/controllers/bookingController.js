@@ -90,21 +90,24 @@ export const cancelBooking = async (req, res) => {
 
   try {
     const bookingItem = await bookingModel.findOne({ _id: bookingId });
+    console.log(bookingItem);
 
-    if (!bookingItem) {
+    /* if (!bookingItem) {
       return res.status(404).json({ message: "Booking not found" });
-    }
+    }*/
 
     bookingItem.status = "cancelled";
     await bookingItem.save();
 
     const room = await roomModel.findOne({ _id: roomId });
 
-    if (!room) {
-      return res.status(404).json({ message: "Room not found" });
-    }
+    console.log(room);
 
-    room.currentBookings = room.currentBookings.filter(
+    /* if (!room) {
+      return res.status(404).json({ message: "Room not found" });
+    } */
+
+    room.currentBookings.filter(
       (booking) => booking.bookingId.toString() !== bookingId
     );
 

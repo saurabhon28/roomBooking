@@ -6,6 +6,7 @@ import BookingPage from "./pages/BookingPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
+import AdminPage from "./pages/AdminPage";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             element={<BookingPage />}
           />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/admin" element={<AdminPage />} />
         </Routes>
       </BrowserRouter>
     </>

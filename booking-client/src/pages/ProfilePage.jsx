@@ -68,6 +68,7 @@ export function MyBookings() {
   }, [user._id]);
 
   const cancelBooking = async (bookingId, roomId) => {
+    console.log(bookingId, roomId);
     try {
       setLoading(true);
       const result = await axios.post("/api/cancelbooking", {
